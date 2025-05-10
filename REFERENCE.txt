@@ -1,0 +1,148 @@
+                                                                                |
+#- Types
+
+swl_window_t - opaque window type
+swl_event_t - event structure type
+swl_event_type_t - event type enum
+swl_backend_t - backend enum
+
+#- Functions
+
+bool swl_init(swl_backend_t backend)
+Does platform-specific initialization. If not called first, behavior is
+undefined for all other functions. Returns true on success and false on
+failure.
+
+swl_backend_t swl_get_backend()
+Returns the current backend, useful if SWL_BACKEND_ANY was used.
+
+swl_window_t* swl_create_window()
+Creates a window. It is not visible and has a blank title and an unknown size
+and position. It is resizable, transparency is disabled, and the window has
+bordered. Returns NULL on error.
+
+bool swl_set_window_title(swl_window_t* window, const char* title)
+Sets the title of window to title. Input is treated as UTF-8. Returns true on
+success and false on failure.
+
+bool swl_set_window_size(swl_window_t* window, uint32_t x, uint32_t y)
+Sets the width of window to x and the height to y. Returns true on success and
+false on failure.
+
+bool swl_set_window_pos(swl_window_t* window, uint32_t x, uint32_t y)
+Sets the x position of window to x and the y position to y. Returns true on
+success and false on failure.
+
+bool swl_set_window_resizable(swl_window_t* window, bool resizable)
+Sets whether the window is resizable or not based on resizable. Returns true on
+error and false on failure.
+
+bool swl_set_window_transparent(swl_window_t* window, bool transparent)
+Sets whether the window is transparent or not based on transparent. Returns true
+on error and false on failure.
+
+bool swl_set_window_borderless(swl_window_t* window, bool borderless)
+Sets whether the window is borderless or not based on borderless. Returns true on
+error and false on failure.
+
+bool swl_set_window_visible(swl_window_t* window, bool visible)
+Sets whether the window is visible or not based on visible. Returns true on error
+and false on failure.
+
+char* swl_get_window_title(swl_window_t* window)
+Gets the title of window. The pointer will remain valid until this function is
+called again. Returns NULL on failure.
+
+bool swl_get_window_size(swl_window_t* window, uint32_t* x, uint32_t* y)
+Gets the size of window, storing in *x and *y. Returns true on success and false
+on failure.
+
+bool swl_get_window_pos(swl_window_t* window, uint32_t* x, uint32_t* y)
+Gets the position of window, storing in *x and *y. Returns true on success and
+false on failure.
+
+bool swl_get_window_resizable(swl_window_t* window, bool* resizable)
+Sets *resizable to true if window is resizable, false otherwise. Returns true on
+success and false on failure. The return value is _NOT_ the state!
+
+bool swl_get_window_transparent(swl_window_t* window, bool* transparent)
+Sets *transparent to true if window is transparent, false otherwise. Returns
+true on success and false on failure. The return value is _NOT_ the state!
+
+bool swl_get_window_borderless(swl_window_t* window, bool* borderless)
+Sets *borderless to true if window is borderless, false otherwise. Returns true
+on success and false on failure. The return value is _NOT_ the state!
+
+bool swl_get_window_visible(swl_window_t* window, bool* visible)
+Sets *visible to true if window is visible, false otherwise. Returns true on
+success and false on failure. The return value is _NOT_ the state!
+
+void* swl_get_window_handle_raw(swl_window_t* window)
+Gets the native window handle for window. On Windows, this is the HWND. On X11,
+the xcb_window_t cast to a void*. On Wayland, the struct wl_surface*. On macOS,
+an NSWindow*.
+
+bool swl_get_event(swl_event_t* event)
+Sets *event to the first available event. The type is SWL_EVENT_NONE if no event
+is available. Returns true on success and false on failure.
+
+bool swl_wait_event()
+Waits for an event. This is preferable to constantly running swl_get_event for
+retained mode programs, saving CPU cycles and power.
+
+#- Events
+
+typedef struct {
+	swl_event_type_t type;
+	union {
+		struct {
+			uint32_t keycode;
+			uint32_t scancode;
+			bool repeat;
+		} key;
+		struct {
+			uint32_t x;
+			uint32_t y;
+			uint32_t oldx;
+			uint32_t oldy;
+		} mouse_move;
+		struct {
+			uint32_t button;
+		} mouse_button;
+		struct {
+			uint32_t w;
+			uint32_t h;
+			uint32_t oldw;
+			uint32_t oldh;
+		} resize;
+		struct {
+			uint32_t x0;
+			uint32_t y0;
+			uint32_t x1;
+			uint32_t y1;
+		} paint;
+	};
+} swl_event_t;
+
+typedef enum {
+	SWL_EVENT_NULL,
+	SWL_EVENT_QUIT,
+	SWL_EVENT_KEYDOWN,
+	SWL_EVENT_KEYUP,
+	SWL_EVENT_MOUSEMOVE,
+	SWL_EVENT_MOUSEDOWN,
+	SWL_EVENT_MOUSEUP,
+	SWL_EVENT_RESIZING,
+	SWL_EVENT_RESIZED,
+	SWL_EVENT_PAINT,
+} swl_event_type_t;
+
+#- Backends
+
+typedef enum {
+	SWL_BACKEND_ANY,
+	SWL_BACKEND_WIN32,
+	SWL_BACKEND_COCOA,
+	SWL_BACKEND_X11,
+	SWL_BACKEND_WAYLAND,
+} swl_backend_t;

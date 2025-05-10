@@ -1,0 +1,22 @@
+LIBRARY swl
+EXPORTS
+swl_init
+swl_create_window
+swl_set_window_title
+swl_set_window_size
+swl_set_window_pos
+swl_set_window_resizable
+swl_set_window_transparent
+swl_set_window_borderless
+swl_set_window_visible
+swl_get_window_title
+swl_get_window_size
+swl_get_window_pos
+swl_get_window_resizable
+swl_get_window_transparent
+swl_get_window_borderless
+swl_get_window_visible
+swl_get_window_handle_raw
+swl_get_event
+swl_wait_event
+swl_get_error

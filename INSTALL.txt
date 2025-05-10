@@ -1,0 +1,9 @@
+For Windows:
+                                                                                |
+The official way to compile swl is with the Makefile. Open a developer command
+prompt, change directory to the root of the project, and run 'nmake'. It will
+build both a static and dynamic library.
+
+If you aren't using MSVC, you can still build swl; you just need to bring your
+own makefile. Hint: you can probably just 'cc -c src/*.c', all platform-specific
+code is guarded with OS-specific macro ifdefs.
