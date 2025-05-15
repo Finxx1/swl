@@ -4,7 +4,9 @@
 TARGET=swl
 OBJECTS=\
 	src\registry.o \
-	src\win32_window.o
+	src\win32_window.o \
+	src\win32_mem.o \
+	src\pool.o
 EXAMPLES=\
 	examples/simple_window.exe
 

@@ -1,3 +1,5 @@
+#ifdef SWL_WINDOWS
+
 #include "swl_w32.h"
 
 /*
@@ -110,3 +112,5 @@ bool w32_swl_get_event(swl_event_t* event) {
 bool w32_swl_wait_event(void) {
 	return swl_error("Not implemented.");
 }
+
+#endif /* SWL_WINDOWS */

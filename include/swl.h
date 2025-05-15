@@ -95,6 +95,28 @@ const char* swl_get_error(void);
 
 #ifdef INTERNAL
 bool swl_error(const char* err);
+
+typedef struct {
+	void* base;
+	ptrdiff_t pos;
+	ptrdiff_t reserved;
+	ptrdiff_t committed;
+} swl_arena_t;
+
+swl_arena_t swl_new_arena(void);
+void* swl_push_arena(swl_arena_t* arena, ptrdiff_t amnt);
+void swl_pop_arena(swl_arena_t* arena, ptrdiff_t amnt);
+void swl_free_arena(swl_arena_t* arena);
+
+typedef struct {
+	swl_arena_t pool_arena;
+	void* free_list;
+} swl_pool_t;
+
+swl_pool_t swl_new_pool(ptrdiff_t size);
+void* swl_pool_alloc(swl_pool_t* pool);
+void swl_pool_free(swl_pool_t* pool, void* ptr);
+void swl_free_pool(swl_pool_t* pool);
 #endif
 
 #ifdef __cplusplus
