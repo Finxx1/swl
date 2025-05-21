@@ -15,7 +15,7 @@
 typedef struct swl_window_t swl_window_t;
 
 typedef enum {
-	SWL_EVENT_NULL,
+	SWL_EVENT_NONE,
 	SWL_EVENT_QUIT,
 	SWL_EVENT_KEYDOWN,
 	SWL_EVENT_KEYUP,
@@ -96,6 +96,8 @@ const char* swl_get_error(void);
 #ifdef INTERNAL
 bool swl_error(const char* err);
 
+#define SWL_ADD_OFFSET(ptr, bytes) (void*)(((uint8_t*)(ptr))+(bytes))
+
 typedef struct {
 	void* base;
 	ptrdiff_t pos;
@@ -106,11 +108,13 @@ typedef struct {
 swl_arena_t swl_new_arena(void);
 void* swl_push_arena(swl_arena_t* arena, ptrdiff_t amnt);
 void swl_pop_arena(swl_arena_t* arena, ptrdiff_t amnt);
+void swl_clear_arena(swl_arena_t* arena);
 void swl_free_arena(swl_arena_t* arena);
 
 typedef struct {
-	swl_arena_t pool_arena;
+	swl_arena_t arena;
 	void* free_list;
+	ptrdiff_t size;
 } swl_pool_t;
 
 swl_pool_t swl_new_pool(ptrdiff_t size);

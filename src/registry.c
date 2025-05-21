@@ -49,7 +49,7 @@ static struct {
 } swl_vtable;
 
 #define ADD_TO_VTABLE(x, backend) \
-swl_vtable. ## x = backend ## _ ## x
+swl_vtable.x = backend ## _ ## x
 
 bool swl_init(swl_backend_t backend) {
 #ifdef SWL_WINDOWS

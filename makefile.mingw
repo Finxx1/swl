@@ -1,0 +1,37 @@
+.SUFFIXES: .c .o .exe
+
+TARGET=swl
+OBJECTS=\
+	src/registry.o \
+	src/win32_window.o \
+	src/win32_mem.o \
+	src/pool.o
+EXAMPLES=\
+	examples/simple_window.exe
+
+CFLAGS=-DINTERNAL -Iinclude
+LDFLAGS=-nostdlib -luser32 -lkernel32 -lgdi32
+
+# You probably shouldn't edit below this line.
+
+all: $(TARGET).a $(TARGET).dll
+clean:
+	-del /Q $(TARGET).a $(TARGET).dll $(TARGET)dll.a $(OBJECTS) >NUL 2>NUL
+	-rm -f $(TARGET).a $(TARGET).dll $(TARGET)dll.a $(OBJECTS) >NUL 2>NUL
+examples: $(TARGET).dll $(EXAMPLES)
+test: examples
+	examples/simple_window
+
+$(TARGET).a: $(OBJECTS)
+	ar r $(TARGET).a $(OBJECTS)
+
+$(TARGET).dll: $(OBJECTS) src/$(TARGET).def
+	cc src/$(TARGET).def -shared -e 0 -o $(TARGET).dll $(OBJECTS) $(LDFLAGS)
+	dlltool -D $(TARGET).dll -d src/$(TARGET).def -l $(TARGET)dll.a
+
+.c.o:
+	cc $(CFLAGS) -c -o $@ $<
+
+# Only used for examples.
+.c.exe:
+	cc $(CFLAGS) -o $@ $< -L. -l:$(TARGET)dll.a

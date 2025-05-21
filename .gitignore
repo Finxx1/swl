@@ -2,3 +2,8 @@
 **.lib
 **.exp
 **.pdb
+**.o
+**.a
+**.exe
+makefile
+

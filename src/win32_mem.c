@@ -1,6 +1,6 @@
-#ifdef SWL_WINDOWS
-
 #include "swl_w32.h"
+
+#ifdef SWL_WINDOWS
 
 /*
  * MODULE SUMMARY
@@ -32,13 +32,14 @@ swl_arena_t swl_new_arena(void) {
 	arena.pos = 0;
 	arena.reserved = ARENA_RESERVE;
 	arena.committed = ARENA_INITIAL_COMMIT;
+	return arena;
 }
 
 void* swl_push_arena(swl_arena_t* arena, ptrdiff_t amnt) {
 	if (arena == NULL) return NULL;
 	if (amnt == 0) return NULL;
 	
-	while (arena.pos + amnt >= arena->committed) {
+	while (arena->pos + amnt >= arena->committed) {
 		ptrdiff_t newsize = arena->committed * 2;
 		void* foo = VirtualAlloc(arena, newsize, MEM_COMMIT, PAGE_READWRITE);
 		if (foo == NULL) {
@@ -47,8 +48,8 @@ void* swl_push_arena(swl_arena_t* arena, ptrdiff_t amnt) {
 		arena->committed = newsize;
 	}
 	uint8_t* r = arena->base;
-	r += arena.pos;
-	arena.pos += amnt;
+	r += arena->pos;
+	arena->pos += amnt;
 	return r;
 }
 
@@ -57,6 +58,12 @@ void swl_pop_arena(swl_arena_t* arena, ptrdiff_t amnt) {
 	if (amnt == 0) return;
 	
 	arena->pos -= amnt;
+}
+
+void swl_clear_arena(swl_arena_t* arena) {
+	if (arena == NULL) return;
+
+	arena->pos = 0;
 }
 
 void swl_free_arena(swl_arena_t* arena) {

@@ -1,0 +1,39 @@
+#!/usr/bin/env sh
+# This configure script is cross-platform! It should run properly on all UNIX
+# likes and Windows, using Busybox-w32 or MSYS2.
+
+platform=$(uname)
+
+case $platform in
+	*Windows*)
+		platform="WINDOWS"
+	;;
+	*)
+		echo unknown platform
+		exit 1
+	;;
+esac
+
+if [ $platform = "WINDOWS" ]; then
+	which cc >/dev/null
+	if [ $? = "0" ]; then
+		compiler="cc"
+	else
+		which cl >/dev/null
+		if [ $? = "0" ]; then
+			compiler="cl"
+		else
+			echo cannot find a compiler
+		fi
+	fi
+
+	if [ $compiler = "cc" ]; then
+		echo "# GENERATED FILE. DO NOT EDIT." > makefile
+		cat makefile.mingw >> makefile
+	fi
+	if [ $compiler = "cl" ]; then
+		echo "# GENERATED FILE. DO NOT EDIT." > makefile
+		cat makefile.msvc >> makefile
+	fi
+fi
+
